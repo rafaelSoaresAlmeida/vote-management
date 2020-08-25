@@ -54,7 +54,7 @@ public class ExceptionResourceHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(AssemblyVotingSessionNoExistException.class)
+    @ExceptionHandler(AssemblyVotingSessionNotExistException.class)
     public final ResponseEntity<ExceptionResponse> handleAssemblyVotingSessionNoExistException(final WebRequest request) {
         final ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(),
                 ErrorMessages.ASSEMBLY_VOTING_SESSION_NOT_EXIST.getMessage(), request.getDescription(false));
@@ -65,6 +65,13 @@ public class ExceptionResourceHandler extends ResponseEntityExceptionHandler {
     public final ResponseEntity<ExceptionResponse> handleAssemblyVotingSessionNotOpenException(final WebRequest request) {
         final ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(),
                 ErrorMessages.ASSEMBLY_VOTING_SESSION_NOT_OPEN.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AssemblyVotingSessionAlreadyOpenException.class)
+    public final ResponseEntity<ExceptionResponse> handleAssemblyVotingSessionAlreadyOpenException(final WebRequest request) {
+        final ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(),
+                ErrorMessages.ASSEMBLY_VOTING_SESSION_ALREADY_OPEN.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 

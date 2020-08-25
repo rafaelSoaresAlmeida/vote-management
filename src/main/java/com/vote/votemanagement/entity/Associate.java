@@ -1,5 +1,6 @@
 package com.vote.votemanagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,4 +35,8 @@ public class Associate {
     @CreationTimestamp
     @JsonProperty("Criado em")
     private LocalDateTime creationDate;
+
+    @Column
+    @JsonIgnore
+    private String createdByAssociateCpf;
 }

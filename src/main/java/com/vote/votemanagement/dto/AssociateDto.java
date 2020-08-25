@@ -9,6 +9,6 @@ import java.io.Serializable;
 @Getter
 public class AssociateDto implements Serializable {
     private String cpf;
-
     private String name;
+    private String createdByAssociateCpf;
 }

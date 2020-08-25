@@ -79,7 +79,7 @@ public class AssemblyServiceTest {
     public void openAssemblyVotingSessionWithSuccess() {
 
         VotingSessionDto votingSessionDto = VotingSessionDto.builder()
-                .AssemblyName("AssemblyNameTest")
+                .assemblyName("AssemblyNameTest")
                 .associateCpf(CPF)
                 .votingSessionDuration(10)
                 .build();
@@ -101,7 +101,7 @@ public class AssemblyServiceTest {
     public void throwOpenAssemblyVotingSessionExceptionWhenOpenAssemblyVotingSession() {
 
         VotingSessionDto votingSessionDto = VotingSessionDto.builder()
-                .AssemblyName("AssemblyNameTest")
+                .assemblyName("AssemblyNameTest")
                 .associateCpf(CPF)
                 .votingSessionDuration(10)
                 .build();
@@ -125,8 +125,8 @@ public class AssemblyServiceTest {
     public void voteWithSuccess() {
 
         VoteDto voteDto = VoteDto.builder()
-                .vote(true)
-                .AssemblyName("assemblyTest")
+                .vote("sim")
+                .assemblyName("assemblyTest")
                 .associateCpf(CPF)
                 .build();
 
@@ -153,8 +153,8 @@ public class AssemblyServiceTest {
     public void voteWhenAssociatedAlreadyVoted() {
 
         VoteDto voteDto = VoteDto.builder()
-                .vote(true)
-                .AssemblyName("assemblyTest")
+                .vote("não")
+                .assemblyName("assemblyTest")
                 .associateCpf(CPF)
                 .build();
 
@@ -185,8 +185,8 @@ public class AssemblyServiceTest {
     public void throwVoteProcessExceptionDuringVoteProcess() {
 
         VoteDto voteDto = VoteDto.builder()
-                .vote(true)
-                .AssemblyName("assemblyTest")
+                .vote("sim")
+                .assemblyName("assemblyTest")
                 .associateCpf(CPF)
                 .build();
 
@@ -267,7 +267,7 @@ public class AssemblyServiceTest {
         ReflectionTestUtils.invokeMethod(assemblyService, "validateAssemblyVotingSessionDuringVote", inputArray);
     }
 
-    @Test(expected = AssemblyVotingSessionNoExistException.class)
+    @Test(expected = AssemblyVotingSessionNotExistException.class)
     public void throwAssemblyVotingSessionNoExistExceptionWhenAssemblyVoteSessionNotExist() {
         inputArray = new Object[]{null};
         ReflectionTestUtils.invokeMethod(assemblyService, "validateAssemblyVotingSessionDuringVote", inputArray);

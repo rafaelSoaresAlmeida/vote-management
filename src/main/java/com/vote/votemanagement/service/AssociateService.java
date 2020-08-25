@@ -40,12 +40,14 @@ public class AssociateService {
     public Associate createAssociate(final AssociateDto associateDto) {
         log.info("Create a new associate registry");
         validateAssociate(associateDto.getCpf());
+        final Associate associate = getAssociate(associateDto.getCreatedByAssociateCpf());
 
         try {
             return associateRepository.save(Associate.builder()
                     .cpf(associateDto.getCpf())
                     .name(associateDto.getName())
                     .creationDate(LocalDateTime.now(ZoneId.of(timeZone)))
+                    .createdByAssociateCpf(associate.getCpf())
                     .build());
         } catch (Exception e) {
             log.error("Error in create associate registry", e);

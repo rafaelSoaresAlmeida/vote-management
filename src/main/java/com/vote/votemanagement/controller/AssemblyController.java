@@ -54,21 +54,9 @@ public class AssemblyController {
         return assemblyService.openAssemblyVotingSession(votingSessionDto);
     }
 
-/*    @GetMapping(value = "/{assemblyName}")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Retrieve assembly registry by name on database.")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "OK", response = Assembly.class),
-            @ApiResponse(code = 400, message = "Bad Request", response = String.class),
-            @ApiResponse(code = 500, message = "Internal Server ErrorMessage", response = String.class)
-    })
-    public Assembly getAssemblyByName(@PathVariable String assemblyName) {
-        return assemblyService.findAssemblyByName(assemblyName);
-    }*/
-
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Retrieve all assemblies registry by name on database.")
+    @ApiOperation(value = "Retrieve all assemblies registry on database.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK", response = ArrayList.class),
             @ApiResponse(code = 400, message = "Bad Request", response = String.class),

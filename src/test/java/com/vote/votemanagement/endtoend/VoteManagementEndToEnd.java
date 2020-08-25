@@ -52,7 +52,7 @@ public class VoteManagementEndToEnd {
         final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
         final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSOCIATE_ENDPOINT), HttpMethod.POST, entity, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.getBody().contains("{\"cpf\":\"49751616131\",\"name\":\"otto\",\"creationDate\":"));
+        assertTrue(response.getBody().contains("{\"CPF\":\"49751616131\",\"Nome do associado\":\"otto\",\"Criado em\":"));
     }
 
     @Test
@@ -61,14 +61,16 @@ public class VoteManagementEndToEnd {
         final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
         final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSOCIATE_ENDPOINT), HttpMethod.POST, entity, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertTrue(response.getBody().contains( ErrorMessages.ASSOCIATE_ALREADY_EXIST.getMessage()));
+        assertTrue(response.getBody().contains(ErrorMessages.ASSOCIATE_ALREADY_EXIST.getMessage()));
     }
 
     @Test
-    public void shouldReturn200WhenGettAllAssociates() {
-        final HttpEntity<String> entity = new HttpEntity<String>(buildHttpHeaders());
-        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSOCIATE_ENDPOINT), HttpMethod.GET, entity, String.class);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+    public void shouldReturn400WhenInsertNewAssociateWithInvalidAssociate() {
+        final String payload = readJson("request/insertAssociateWithInvalidAssociate.json");
+        final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
+        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSOCIATE_ENDPOINT), HttpMethod.POST, entity, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(response.getBody().contains(ErrorMessages.ASSOCIATE_NOT_FOUND.getMessage()));
     }
 
     @Test
@@ -77,7 +79,7 @@ public class VoteManagementEndToEnd {
         final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
         final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT), HttpMethod.POST, entity, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.getBody().contains("\"name\":\"Tiburcio Assembly\",\"votingSession\":null,\"createdBy\":{\"cpf\":\"32025468300\",\"name\":\"Tiburcio\",\"creationDate\":null},\"creationDate\":"));
+        assertTrue(response.getBody().contains("{\"Nome da pauta\":\"Tiburcio Assembly\",\"Sessão de votos\":null,\"Criada por\":{\"CPF\":\"32025468300\",\"Nome do associado\":\"Tiburcio\",\"Criado em\":null},\"Criada em\":"));
     }
 
     @Test
@@ -86,25 +88,116 @@ public class VoteManagementEndToEnd {
         final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
         final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT), HttpMethod.POST, entity, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertTrue(response.getBody().contains( ErrorMessages.ASSEMBLY_NAME_ALREADY_EXIST.getMessage()));
+        assertTrue(response.getBody().contains(ErrorMessages.ASSEMBLY_NAME_ALREADY_EXIST.getMessage()));
     }
 
     @Test
     public void shouldReturn400WhenCreateAssemblyWithAssociateNotExist() {
-        final String payload = readJson("request/createAssemblyWithAssociateNoteExist.json");
+        final String payload = readJson("request/createAssemblyWithAssociateNotExist.json");
         final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
         final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT), HttpMethod.POST, entity, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertTrue(response.getBody().contains( ErrorMessages.ASSOCIATE_NOT_FOUND.getMessage()));
+        assertTrue(response.getBody().contains(ErrorMessages.ASSOCIATE_NOT_FOUND.getMessage()));
     }
 
     @Test
     public void shouldReturn200WhenOpenVotingSession() {
         final String payload = readJson("request/openVotingSessionWithSuccess.json");
         final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
-        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat("/OpenVotingSession"), HttpMethod.POST, entity, String.class);
+        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat("/openVotingSession"), HttpMethod.POST, entity, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
+    @Test
+    public void shouldReturn400WhenOpenVotingSessionWithExistVotingSession() {
+        final String payload = readJson("request/openVotingSessionWhenExistVotingSession.json");
+        final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
+        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat("/openVotingSession"), HttpMethod.POST, entity, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(response.getBody().contains(ErrorMessages.ASSEMBLY_VOTING_SESSION_ALREADY_OPEN.getMessage()));
+    }
 
+    @Test
+    public void shouldReturn400WhenOpenVotingSessionWithAssociateNotExist() {
+        final String payload = readJson("request/openVotingSessionWithAssociateNotExist.json");
+        final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
+        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat("/openVotingSession"), HttpMethod.POST, entity, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(response.getBody().contains(ErrorMessages.ASSOCIATE_NOT_FOUND.getMessage()));
+    }
+
+    @Test
+    public void shouldReturn200WhenVoteYes() {
+        final String payload = readJson("request/voteYesWithSuccess.json");
+        final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
+        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat("/vote"), HttpMethod.POST, entity, String.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void shouldReturn200WhenVoteNo() {
+        final String payload = readJson("request/voteNoWithSuccess.json");
+        final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
+        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat("/vote"), HttpMethod.POST, entity, String.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void shouldReturn400WhenInvalidVote() {
+        final String payload = readJson("request/invalidVote.json");
+        final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
+        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat("/vote"), HttpMethod.POST, entity, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(response.getBody().contains(ErrorMessages.INVALID_VOTE.getMessage()));
+    }
+
+    @Test
+    public void shouldReturn400WhenVoteInClosedVotingSession() {
+        final String payload = readJson("request/voteVotingSessionClosed.json");
+        final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
+        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat("/vote"), HttpMethod.POST, entity, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(response.getBody().contains(ErrorMessages.ASSEMBLY_VOTING_SESSION_NOT_OPEN.getMessage()));
+    }
+
+    @Test
+    public void shouldReturn400WhenVoteSessionNotCreated() {
+        final String payload = readJson("request/voteVotingSessionNotCreated.json");
+        final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
+        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat("/vote"), HttpMethod.POST, entity, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(response.getBody().contains(ErrorMessages.ASSEMBLY_VOTING_SESSION_NOT_EXIST.getMessage()));
+    }
+
+    @Test
+    public void shouldReturn400WhenVoteSessionWithAssociateNotExist() {
+        final String payload = readJson("request/voteYesWithAssociateNotExist.json");
+        final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
+        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat("/vote"), HttpMethod.POST, entity, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(response.getBody().contains(ErrorMessages.ASSOCIATE_NOT_FOUND.getMessage()));
+    }
+
+    @Test
+    public void shouldReturn200WhenGetAllAssociates() {
+        final HttpEntity<String> entity = new HttpEntity<String>(buildHttpHeaders());
+        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSOCIATE_ENDPOINT), HttpMethod.GET, entity, String.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void shouldReturn200WhenGetAssemblyByName() {
+        final HttpEntity<String> entity = new HttpEntity<String>(buildHttpHeaders());
+        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat("/32025468300/assembly opened"), HttpMethod.GET, entity, String.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.getBody().contains("{\"Nome da pauta\":\"assembly opened\",\"Sessão de votos\":{\"Aberta\":true,\"Data de inicio\":\"2020-08-24T06:41:16\",\"Data de encerramento\":null,\"Aberta por\":{\"CPF\":\"32025468300\",\"Nome do associado\":\"Tiburcio\",\"Criado em\":null},\"Total de votos SIM\":0,\"Total de votos NÃO\":2},\"Criada por\":{\"CPF\":\"32025468300\",\"Nome do associado\":\"Tiburcio\",\"Criado em\":null},\"Criada em\":\"2020-08-24T03:26:16\"}"));
+    }
+
+    @Test
+    public void shouldReturn400WhenGetAssemblyByNameWithAssociateNotExist() {
+        final HttpEntity<String> entity = new HttpEntity<String>(buildHttpHeaders());
+        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat("/00025468300/assembly opened"), HttpMethod.GET, entity, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(response.getBody().contains(ErrorMessages.ASSOCIATE_NOT_FOUND.getMessage()));
+    }
 }

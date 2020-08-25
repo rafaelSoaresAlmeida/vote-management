@@ -19,6 +19,7 @@ public enum ErrorMessages {
 
     ASSEMBLY_VOTING_SESSION_NOT_EXIST("There not voting session open for the assembly informed"),
     ASSEMBLY_VOTING_SESSION_NOT_OPEN("This voting session was finished for the assembly informed"),
+    ASSEMBLY_VOTING_SESSION_ALREADY_OPEN("This voting session is already open"),
 
     UNEXPECTED_ERROR("Unexpected error happened, please call application support for more details");
 

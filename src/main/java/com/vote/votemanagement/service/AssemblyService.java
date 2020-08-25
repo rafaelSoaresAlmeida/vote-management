@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -143,7 +142,7 @@ public class AssemblyService {
         try {
             assemblyRepository.save(assembly);
         } catch (Exception exception) {
-            log.error("Error in vote process to associate with cpf: {}", voteDto.getAssociateCpf());
+            log.error("Error in vote process to associate with cpf: {}", voteDto.getAssociateCpf(), exception);
             throw new VoteProcessException();
         }
     }
@@ -165,7 +164,7 @@ public class AssemblyService {
 
         if (nonNull(assembly.getVotingSession())) {
             log.warn("Already exist a voting session for assembly with name: {}", assemblyName);
-            throw new AssemblyNotFoundException();
+            throw new AssemblyVotingSessionAlreadyOpenException();
         }
 
         return assembly;
@@ -185,7 +184,7 @@ public class AssemblyService {
         log.info("Validate voting session");
         if (isNull(votingSession)) {
             log.warn("Assembly voting session  was not found");
-            throw new AssemblyVotingSessionNoExistException();
+            throw new AssemblyVotingSessionNotExistException();
         }
 
         if (!votingSession.isOpened()) {
@@ -204,8 +203,8 @@ public class AssemblyService {
     private void closeVotingSession(final VotingSession votingSession) {
         if (LocalDateTime.now(ZoneId.of(timeZone)).isAfter(votingSession.getFinishDate())) {
             try {
-                votingSession.setOpened(false);
-                votingSessionRepository.save(votingSession);
+             //   votingSession.setOpened(false);
+              //  votingSessionRepository.save(votingSession);
             } catch (Exception e) {
                 log.error("Error to close voting session with id: {}", votingSession.getId(), e);
             }
