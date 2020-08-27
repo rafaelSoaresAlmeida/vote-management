@@ -18,14 +18,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
+import java.util.List;
 
 @RestController
-@RequestMapping(path = "/assembly", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/v1/assembly", produces = MediaType.APPLICATION_JSON_VALUE)
 @Api(tags = "Assembly service controller")
 @Slf4j
 @Controller
 public class AssemblyController {
+
+    private static final String BAD_REQUEST = "Bad Request";
+    private static final String INTERNAL_SERVER_ERROR = "Internal Server ErrorMessage";
 
     @Autowired
     private AssemblyService assemblyService;
@@ -35,8 +38,8 @@ public class AssemblyController {
     @ApiOperation(value = "Create new Assembly.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK", response = Associate.class),
-            @ApiResponse(code = 400, message = "Bad Request", response = String.class),
-            @ApiResponse(code = 500, message = "Internal Server ErrorMessage", response = String.class)
+            @ApiResponse(code = 400, message = BAD_REQUEST, response = String.class),
+            @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = String.class)
     })
     public Assembly createAssembly(@Valid @RequestBody AssemblyDto assemblyDto) {
         return assemblyService.createAssembly(assemblyDto);
@@ -47,8 +50,8 @@ public class AssemblyController {
     @ApiOperation(value = "Open assembly voting session.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK", response = Associate.class),
-            @ApiResponse(code = 400, message = "Bad Request", response = String.class),
-            @ApiResponse(code = 500, message = "Internal Server ErrorMessage", response = String.class)
+            @ApiResponse(code = 400, message = BAD_REQUEST, response = String.class),
+            @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = String.class)
     })
     public Assembly openAssemblyAssemblySession(@Valid @RequestBody VotingSessionDto votingSessionDto) {
         return assemblyService.openAssemblyVotingSession(votingSessionDto);
@@ -58,9 +61,9 @@ public class AssemblyController {
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Retrieve all assemblies registry on database.")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK", response = ArrayList.class),
-            @ApiResponse(code = 400, message = "Bad Request", response = String.class),
-            @ApiResponse(code = 500, message = "Internal Server ErrorMessage", response = String.class)
+            @ApiResponse(code = 200, message = "OK", response = List.class),
+            @ApiResponse(code = 400, message = BAD_REQUEST, response = String.class),
+            @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = String.class)
     })
     public Iterable<Assembly> getAllAssemblies() {
         return assemblyService.getAllAssemblies();
@@ -71,8 +74,8 @@ public class AssemblyController {
     @ApiOperation(value = "Open assembly voting session.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "Bad Request", response = String.class),
-            @ApiResponse(code = 500, message = "Internal Server ErrorMessage", response = String.class)
+            @ApiResponse(code = 400, message = BAD_REQUEST, response = String.class),
+            @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = String.class)
     })
     public void vote(@Valid @RequestBody VoteDto voteDto) {
         assemblyService.vote(voteDto);
@@ -83,8 +86,8 @@ public class AssemblyController {
     @ApiOperation(value = "Retrieve assembly registry by name on database.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK", response = Assembly.class),
-            @ApiResponse(code = 400, message = "Bad Request", response = String.class),
-            @ApiResponse(code = 500, message = "Internal Server ErrorMessage", response = String.class)
+            @ApiResponse(code = 400, message = BAD_REQUEST, response = String.class),
+            @ApiResponse(code = 500, message = INTERNAL_SERVER_ERROR, response = String.class)
     })
     public Assembly getAssemblyByName(@PathVariable String associateCpf, @PathVariable String assemblyName) {
         return assemblyService.findAssemblyByName(assemblyName, associateCpf);

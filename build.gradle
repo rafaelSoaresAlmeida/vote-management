@@ -2,11 +2,18 @@ plugins {
 	id 'org.springframework.boot' version '2.3.3.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
 	id 'java'
+	id 'checkstyle'
 }
 
+apply plugin: 'pmd'
+
 group = 'com.vote'
-version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
+
+bootJar {
+	archiveFileName = 'vote-management'
+}
+
 
 configurations {
 	compileOnly {
@@ -47,4 +54,18 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+}
+
+checkstyle {
+	toolVersion = '8.35'
+	ignoreFailures = false
+	maxWarnings = 0
+	configFile = configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+}
+
+pmd {
+	ruleSets = []
+	toolVersion = '6.26.0'
+	ignoreFailures = false
+	ruleSetFiles = files('config/pmd/pmd.xml')
 }

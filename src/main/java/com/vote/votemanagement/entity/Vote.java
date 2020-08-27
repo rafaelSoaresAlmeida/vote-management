@@ -26,7 +26,7 @@ public class Vote {
     private Associate associate;
 
     @Column
-    private Boolean vote;
+    private Boolean value;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "votingSession_id")

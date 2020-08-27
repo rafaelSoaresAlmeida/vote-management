@@ -10,13 +10,13 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootApplication
 public class VoteManagementApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(VoteManagementApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(VoteManagementApplication.class, args);
+    }
 
-	@Bean
-	public RestTemplate getRestTemplate() {
-		return new RestTemplate();
-	}
+    @Bean
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
 
 }

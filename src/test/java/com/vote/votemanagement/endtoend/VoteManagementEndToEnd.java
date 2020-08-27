@@ -24,8 +24,8 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class VoteManagementEndToEnd {
-
-    private static final String BASE_ENDPOINT = "http://localhost:8090/vote-management";
+    private static final String VOTE ="/vote";
+    private static final String BASE_ENDPOINT = "http://localhost:8090/vote-management/v1";
     private static final String ASSOCIATE_ENDPOINT = "/associate";
     private static final String ASSEMBLY_ENDPOINT = "/assembly";
 
@@ -130,7 +130,7 @@ public class VoteManagementEndToEnd {
     public void shouldReturn200WhenVoteYes() {
         final String payload = readJson("request/voteYesWithSuccess.json");
         final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
-        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat("/vote"), HttpMethod.POST, entity, String.class);
+        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat(VOTE), HttpMethod.POST, entity, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
@@ -138,7 +138,7 @@ public class VoteManagementEndToEnd {
     public void shouldReturn200WhenVoteNo() {
         final String payload = readJson("request/voteNoWithSuccess.json");
         final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
-        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat("/vote"), HttpMethod.POST, entity, String.class);
+        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat(VOTE), HttpMethod.POST, entity, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
@@ -146,7 +146,7 @@ public class VoteManagementEndToEnd {
     public void shouldReturn400WhenInvalidVote() {
         final String payload = readJson("request/invalidVote.json");
         final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
-        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat("/vote"), HttpMethod.POST, entity, String.class);
+        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat(VOTE), HttpMethod.POST, entity, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertTrue(response.getBody().contains(ErrorMessages.INVALID_VOTE.getMessage()));
     }
@@ -155,7 +155,7 @@ public class VoteManagementEndToEnd {
     public void shouldReturn400WhenVoteInClosedVotingSession() {
         final String payload = readJson("request/voteVotingSessionClosed.json");
         final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
-        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat("/vote"), HttpMethod.POST, entity, String.class);
+        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat(VOTE), HttpMethod.POST, entity, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertTrue(response.getBody().contains(ErrorMessages.ASSEMBLY_VOTING_SESSION_NOT_OPEN.getMessage()));
     }
@@ -164,7 +164,7 @@ public class VoteManagementEndToEnd {
     public void shouldReturn400WhenVoteSessionNotCreated() {
         final String payload = readJson("request/voteVotingSessionNotCreated.json");
         final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
-        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat("/vote"), HttpMethod.POST, entity, String.class);
+        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat(VOTE), HttpMethod.POST, entity, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertTrue(response.getBody().contains(ErrorMessages.ASSEMBLY_VOTING_SESSION_NOT_EXIST.getMessage()));
     }
@@ -173,7 +173,7 @@ public class VoteManagementEndToEnd {
     public void shouldReturn400WhenVoteSessionWithAssociateNotExist() {
         final String payload = readJson("request/voteYesWithAssociateNotExist.json");
         final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
-        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat("/vote"), HttpMethod.POST, entity, String.class);
+        final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat(VOTE), HttpMethod.POST, entity, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertTrue(response.getBody().contains(ErrorMessages.ASSOCIATE_NOT_FOUND.getMessage()));
     }

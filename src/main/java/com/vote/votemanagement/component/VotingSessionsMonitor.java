@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class VotingSessionsMonitor {
 
     @Autowired
-    AssemblyService assemblyService;
+    private AssemblyService assemblyService;
 
     @Async
     @Scheduled(cron = "0 * * * * *")

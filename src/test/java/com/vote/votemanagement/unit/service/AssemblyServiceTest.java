@@ -2,7 +2,6 @@ package com.vote.votemanagement.unit.service;
 
 import com.vote.votemanagement.dto.AssemblyDto;
 import com.vote.votemanagement.dto.VoteDto;
-import com.vote.votemanagement.dto.VotingSessionDto;
 import com.vote.votemanagement.entity.Assembly;
 import com.vote.votemanagement.entity.Associate;
 import com.vote.votemanagement.entity.Vote;
@@ -16,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -53,188 +51,72 @@ public class AssemblyServiceTest {
         MockitoAnnotations.initMocks(this);
     }
 
-    @Test
-    public void createAssemblyWithSuccess() {
-        AssemblyDto assemblyDto = AssemblyDto.builder()
-                .build();
-
-        Assembly assembly = Assembly.builder()
-                .build();
-
-        doReturn(assembly).when(assemblyRepository).save(Mockito.any(Assembly.class));
-        assertNotNull(assemblyService.createAssembly(assemblyDto));
-    }
-
-
     @Test(expected = CreateAssemblyException.class)
     public void throwCreateAssemblyExceptionDuringCreateAssemblyProcess() {
-        AssemblyDto assemblyDto = AssemblyDto.builder()
+        final AssemblyDto assemblyDto = AssemblyDto.builder()
                 .build();
 
-        doThrow(CreateAssemblyException.class).when(assemblyRepository).save(Mockito.any(Assembly.class));
+        doThrow(CreateAssemblyException.class).when(assemblyRepository).save(any(Assembly.class));
         assemblyService.createAssembly(assemblyDto);
-    }
-
-    @Test
-    public void openAssemblyVotingSessionWithSuccess() {
-
-        VotingSessionDto votingSessionDto = VotingSessionDto.builder()
-                .assemblyName("AssemblyNameTest")
-                .associateCpf(CPF)
-                .votingSessionDuration(10)
-                .build();
-
-        Assembly assembly = Assembly.builder()
-                .build();
-
-        Associate associate = Associate.builder()
-                .build();
-
-        doReturn(assembly).when(assemblyRepository).findByName(Mockito.anyString());
-        doReturn(associate).when(associateService).getAssociate(Mockito.anyString());
-        assemblyService.openAssemblyVotingSession(votingSessionDto);
-
-        Mockito.verify(assemblyRepository, times(1)).save(Mockito.any(Assembly.class));
-    }
-
-    @Test(expected = OpenAssemblyVotingSessionException.class)
-    public void throwOpenAssemblyVotingSessionExceptionWhenOpenAssemblyVotingSession() {
-
-        VotingSessionDto votingSessionDto = VotingSessionDto.builder()
-                .assemblyName("AssemblyNameTest")
-                .associateCpf(CPF)
-                .votingSessionDuration(10)
-                .build();
-
-        Assembly assembly = Assembly.builder()
-                .build();
-
-        Associate associate = Associate.builder()
-                .build();
-
-        doReturn(assembly).when(assemblyRepository).findByName(Mockito.anyString());
-        doReturn(associate).when(associateService).getAssociate(Mockito.anyString());
-        doThrow(OpenAssemblyVotingSessionException.class).when(assemblyRepository).save(Mockito.any(Assembly.class));
-
-        assemblyService.openAssemblyVotingSession(votingSessionDto);
-
-        Mockito.verify(assemblyRepository, times(1)).save(Mockito.any(Assembly.class));
-    }
-
-    @Test
-    public void voteWithSuccess() {
-
-        VoteDto voteDto = VoteDto.builder()
-                .vote("sim")
-                .assemblyName("assemblyTest")
-                .associateCpf(CPF)
-                .build();
-
-        Associate associate = Associate.builder()
-                .build();
-
-        VotingSession votingSession = VotingSession.builder()
-                .opened(true)
-                .votes(new ArrayList<>())
-                .build();
-
-        Assembly assembly = Assembly.builder()
-                .votingSession(votingSession)
-                .build();
-
-        doReturn(associate).when(associateService).getAssociate(Mockito.anyString());
-        doReturn(assembly).when(assemblyRepository).findByName(Mockito.anyString());
-
-        assemblyService.vote(voteDto);
-        Mockito.verify(assemblyRepository, times(1)).save(Mockito.any(Assembly.class));
     }
 
     @Test(expected = AssociateAlreadyVotedException.class)
     public void voteWhenAssociatedAlreadyVoted() {
 
-        VoteDto voteDto = VoteDto.builder()
+        final VoteDto voteDto = VoteDto.builder()
                 .vote("não")
                 .assemblyName("assemblyTest")
                 .associateCpf(CPF)
                 .build();
 
-        Associate associate = Associate.builder()
+        final Associate associate = Associate.builder()
                 .build();
 
-        VotingSession votingSession = VotingSession.builder()
+        final VotingSession votingSession = VotingSession.builder()
                 .opened(true)
                 .votes(new ArrayList<>())
                 .build();
 
-        Assembly assembly = Assembly.builder()
+        final Assembly assembly = Assembly.builder()
                 .votingSession(votingSession)
                 .build();
 
-        Vote vote = Vote.builder()
+        final Vote vote = Vote.builder()
                 .build();
 
-        doReturn(associate).when(associateService).getAssociate(Mockito.anyString());
-        doReturn(assembly).when(assemblyRepository).findByName(Mockito.anyString());
-        doReturn(vote).when(voteRepository).findByAssociateCpf(Mockito.anyString());
+        doReturn(associate).when(associateService).getAssociate(anyString());
+        doReturn(assembly).when(assemblyRepository).findByName(anyString());
+        doReturn(vote).when(voteRepository).findByAssociateCpf(anyString());
 
         assemblyService.vote(voteDto);
-        Mockito.verify(assemblyRepository, times(1)).save(Mockito.any(Assembly.class));
-    }
-
-    @Test(expected = VoteProcessException.class)
-    public void throwVoteProcessExceptionDuringVoteProcess() {
-
-        VoteDto voteDto = VoteDto.builder()
-                .vote("sim")
-                .assemblyName("assemblyTest")
-                .associateCpf(CPF)
-                .build();
-
-        Associate associate = Associate.builder()
-                .build();
-
-        VotingSession votingSession = VotingSession.builder()
-                .opened(true)
-                .votes(new ArrayList<>())
-                .build();
-
-        Assembly assembly = Assembly.builder()
-                .votingSession(votingSession)
-                .build();
-
-        doReturn(associate).when(associateService).getAssociate(Mockito.anyString());
-        doReturn(assembly).when(assemblyRepository).findByName(Mockito.anyString());
-        doThrow(OpenAssemblyVotingSessionException.class).when(assemblyRepository).save(Mockito.any(Assembly.class));
-
-        assemblyService.vote(voteDto);
-        Mockito.verify(assemblyRepository, times(1)).save(Mockito.any(Assembly.class));
+        verify(assemblyRepository, times(1)).save(any(Assembly.class));
     }
 
     @Test
     public void shouldNotThrowExceptionDuringValidateAssemblyOpenVotingSession() {
-        Assembly assembly = Assembly.builder()
+        final Assembly assembly = Assembly.builder()
                 .build();
 
-        doReturn(assembly).when(assemblyRepository).findByName(Mockito.anyString());
+        doReturn(assembly).when(assemblyRepository).findByName(anyString());
 
         inputArray = new Object[]{ASSEMBLY_NAME};
 
         assertEquals(assembly, ReflectionTestUtils.invokeMethod(assemblyService, "validateAssemblyOpenVotingSession", inputArray));
     }
 
-    @Test(expected = AssemblyNotFoundException.class)
+    @Test(expected = AssemblyVotingSessionAlreadyOpenException.class)
     public void validateAssemblyOpenVotingSessionWhenAlreadyExistAVotingSession() {
 
-        VotingSession votingSession = VotingSession.builder()
+        final VotingSession votingSession = VotingSession.builder()
                 .opened(true)
                 .votes(new ArrayList<>())
                 .build();
 
-        Assembly assembly = Assembly.builder()
+        final Assembly assembly = Assembly.builder()
                 .votingSession(votingSession)
                 .build();
 
-        doReturn(assembly).when(assemblyRepository).findByName(Mockito.anyString());
+        doReturn(assembly).when(assemblyRepository).findByName(anyString());
 
         inputArray = new Object[]{ASSEMBLY_NAME};
         ReflectionTestUtils.invokeMethod(assemblyService, "validateAssemblyOpenVotingSession", inputArray);
@@ -242,10 +124,10 @@ public class AssemblyServiceTest {
 
     @Test
     public void getAssemblyWithSuccess() {
-        Assembly assembly = Assembly.builder()
+        final Assembly assembly = Assembly.builder()
                 .build();
 
-        doReturn(assembly).when(assemblyRepository).findByName(Mockito.anyString());
+        doReturn(assembly).when(assemblyRepository).findByName(anyString());
 
         inputArray = new Object[]{ASSEMBLY_NAME};
         assertNotNull(ReflectionTestUtils.invokeMethod(assemblyService, "getAssembly", inputArray));
@@ -259,7 +141,7 @@ public class AssemblyServiceTest {
 
     @Test
     public void shouldNotThrowExceptionDuringValidateAssemblyVotingSessionDuringVote() {
-        VotingSession votingSession = VotingSession.builder()
+        final VotingSession votingSession = VotingSession.builder()
                 .opened(true)
                 .build();
 
@@ -275,7 +157,7 @@ public class AssemblyServiceTest {
 
     @Test(expected = AssemblyVotingSessionNotOpenException.class)
     public void throwAssemblyVotingSessionNotOpenExceptionWhenAssemblyVoteWasFinished() {
-        VotingSession votingSession = VotingSession.builder()
+        final VotingSession votingSession = VotingSession.builder()
                 .opened(false)
                 .build();
 

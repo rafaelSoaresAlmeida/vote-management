@@ -46,12 +46,12 @@ public class AssemblyService {
     public Assembly createAssembly(final AssemblyDto assemblyDto) {
         log.info("Create a new assembly registry");
 
-        final Associate associate = associateService.getAssociate(assemblyDto.getAssociateCpf());
-
         if (nonNull(assemblyRepository.findByName(assemblyDto.getName()))) {
             log.warn("An assembly with this name: {} already exist", assemblyDto.getName());
             throw new AssemblyNameAlreadyExistException();
         }
+
+        final Associate associate = associateService.getAssociate(assemblyDto.getAssociateCpf());
 
         try {
             return assemblyRepository.save(Assembly.builder()
@@ -86,7 +86,7 @@ public class AssemblyService {
         final int votingSessionDuration = votingSessionDto.getVotingSessionDuration();
         final VotingSession votingSession = VotingSession.builder()
                 .startDate(LocalDateTime.now(ZoneId.of(timeZone)))
-                .finishDate(LocalDateTime.now(ZoneId.of(timeZone)).plusMinutes((isNull(votingSessionDuration) || votingSessionDuration == 0) ? 1 : votingSessionDuration))
+                .finishDate(LocalDateTime.now(ZoneId.of(timeZone)).plusMinutes(isNull(votingSessionDuration) || votingSessionDuration == 0 ? 1 : votingSessionDuration))
                 .votes(new ArrayList<>())
                 .opened(true)
                 .openedBy(associate)
@@ -109,10 +109,10 @@ public class AssemblyService {
 
         associateService.validateCpfIsAbleToVote(voteDto.getAssociateCpf());
 
-        final Associate associate = associateService.getAssociate(voteDto.getAssociateCpf());
         final Assembly assembly = getAssembly(voteDto.getAssemblyName());
 
         validateAssemblyVotingSessionDuringVote(assembly.getVotingSession());
+
 
         if (nonNull(voteRepository.findByAssociateCpf(voteDto.getAssociateCpf()))) {
             log.warn("Associate with cpf {} already voted", voteDto.getAssociateCpf());
@@ -121,8 +121,10 @@ public class AssemblyService {
 
         final boolean voteValue = parseVote(voteDto.getVote());
 
+        final Associate associate = associateService.getAssociate(voteDto.getAssociateCpf());
+
         final Vote vote = Vote.builder()
-                .vote(voteValue)
+                .value(voteValue)
                 .associate(associate)
                 .createdDate(LocalDateTime.now(ZoneId.of(timeZone)))
                 .votingSession(assembly.getVotingSession())
@@ -194,8 +196,8 @@ public class AssemblyService {
     }
 
     public void verifyOpenVotingSessions() {
-        List<VotingSession> votingSessions = votingSessionRepository.findByOpened(true);
-        for (VotingSession votingSession : votingSessions) {
+        final List<VotingSession> votingSessions = votingSessionRepository.findByOpened(true);
+        for (final VotingSession votingSession : votingSessions) {
             closeVotingSession(votingSession);
         }
     }
@@ -203,8 +205,8 @@ public class AssemblyService {
     private void closeVotingSession(final VotingSession votingSession) {
         if (LocalDateTime.now(ZoneId.of(timeZone)).isAfter(votingSession.getFinishDate())) {
             try {
-             //   votingSession.setOpened(false);
-              //  votingSessionRepository.save(votingSession);
+                votingSession.setOpened(false);
+                votingSessionRepository.save(votingSession);
             } catch (Exception e) {
                 log.error("Error to close voting session with id: {}", votingSession.getId(), e);
             }

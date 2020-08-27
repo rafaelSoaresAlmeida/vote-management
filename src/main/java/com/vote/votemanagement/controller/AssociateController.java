@@ -15,10 +15,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
+import java.util.List;
 
 @RestController
-@RequestMapping(path = "/associate", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/v1/associate", produces = MediaType.APPLICATION_JSON_VALUE)
 @Api(tags = "Associate service controller")
 @Slf4j
 @Controller
@@ -43,7 +43,7 @@ public class AssociateController {
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Retrieve all associates registry on database.")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK", response = ArrayList.class),
+            @ApiResponse(code = 200, message = "OK", response = List.class),
             @ApiResponse(code = 400, message = "Bad Request", response = String.class),
             @ApiResponse(code = 500, message = "Internal Server ErrorMessage", response = String.class)
     })

@@ -4,9 +4,9 @@ import com.vote.votemanagement.dto.AssociateDto;
 import com.vote.votemanagement.dto.ExternalValidateCpfResponseDto;
 import com.vote.votemanagement.entity.Associate;
 import com.vote.votemanagement.exception.AssociateAlreadyExistException;
+import com.vote.votemanagement.exception.AssociateNotFoundException;
 import com.vote.votemanagement.exception.CreateAssociateException;
 import com.vote.votemanagement.exception.InvalidCpfException;
-import com.vote.votemanagement.exception.AssociateNotFoundException;
 import com.vote.votemanagement.repository.AssociateRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,8 @@ public class AssociateService {
             return associateRepository.save(Associate.builder()
                     .cpf(associateDto.getCpf())
                     .name(associateDto.getName())
-                    .creationDate(LocalDateTime.now(ZoneId.of(timeZone)))
+                    .creationDate(
+                            LocalDateTime.now(ZoneId.of(timeZone)))
                     .createdByAssociateCpf(associate.getCpf())
                     .build());
         } catch (Exception e) {
@@ -71,7 +72,8 @@ public class AssociateService {
     }
 
     public void validateCpfIsAbleToVote(final String cpf) {
-        if(!validateCpf){
+        log.info("Validate CPF is able to vote");
+        if (!validateCpf) {
             log.warn("CPF validation is disable in properties file");
             return;
         }
