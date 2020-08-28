@@ -1,5 +1,6 @@
 package com.vote.votemanagement.service;
 
+import com.google.gson.Gson;
 import com.vote.votemanagement.dto.AssemblyDto;
 import com.vote.votemanagement.dto.VoteDto;
 import com.vote.votemanagement.dto.VotingSessionDto;
@@ -40,8 +41,14 @@ public class AssemblyService {
     @Autowired
     private VotingSessionRepository votingSessionRepository;
 
+    @Autowired
+    ExternalService externalService;
+
     @Value("${timeZone}")
     private String timeZone;
+
+    @Value("${publishMessageOnKafka}")
+    private boolean publishMessageOnKafka;
 
     public Assembly createAssembly(final AssemblyDto assemblyDto) {
         log.info("Create a new assembly registry");
@@ -79,7 +86,7 @@ public class AssemblyService {
     public Assembly openAssemblyVotingSession(final VotingSessionDto votingSessionDto) {
         log.info("Open voting session operation for assembly: {}", votingSessionDto.getAssemblyName());
 
-        final Assembly assembly = validateAssemblyOpenVotingSession(votingSessionDto.getAssemblyName());
+        Assembly assembly = validateAssemblyOpenVotingSession(votingSessionDto.getAssemblyName());
 
         final Associate associate = associateService.getAssociate(votingSessionDto.getAssociateCpf());
 
@@ -97,11 +104,18 @@ public class AssemblyService {
         assembly.setVotingSession(votingSession);
 
         try {
-            return assemblyRepository.save(assembly);
+            assembly = assemblyRepository.save(assembly);
         } catch (Exception exception) {
             log.error("Error to open assembly voting session with name: {}", votingSessionDto.getAssemblyName());
             throw new OpenAssemblyVotingSessionException();
         }
+
+        if (publishMessageOnKafka) {
+            log.warn("Publish message on Kafka property is enable");
+            externalService.publishAssemblyMessageOnKafka(new Gson().toJson(assembly));
+        }
+
+        return assembly;
     }
 
     public void vote(final VoteDto voteDto) {

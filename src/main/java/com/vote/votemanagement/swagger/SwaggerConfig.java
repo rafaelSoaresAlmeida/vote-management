@@ -25,9 +25,8 @@ public class SwaggerConfig {
 
     private Predicate<String> postPaths() {
         return or(
-                regex("/assembly.*"),
-                regex("/assembly/OpenVotingSession.*"),
-                regex("/associate.*")
+                regex("/v1/assembly.*"),
+                regex("/v1/associate.*")
         );
     }
 

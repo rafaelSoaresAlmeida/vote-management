@@ -71,7 +71,7 @@ public class AssemblyController {
 
     @PostMapping("/vote")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Open assembly voting session.")
+    @ApiOperation(value = "Vote in an assembly.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = BAD_REQUEST, response = String.class),

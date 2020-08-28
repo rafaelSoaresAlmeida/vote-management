@@ -1,0 +1,11 @@
+version: "2"
+
+services:
+
+  vote-management-web:
+    image: vote-management:latest
+    ports:
+      - "8090:8090"
+    restart: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=mysql
