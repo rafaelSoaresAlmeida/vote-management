@@ -224,6 +224,11 @@ public class AssemblyService {
             } catch (Exception e) {
                 log.error("Error to close voting session with id: {}", votingSession.getId(), e);
             }
+            if (publishMessageOnKafka) {
+                log.warn("Publish message on Kafka property is enable");
+                final Assembly assembly = assemblyRepository.findByVotingSessionId(votingSession.getId());
+                externalService.publishAssemblyMessageOnKafka(new Gson().toJson(assembly));
+            }
         }
     }
 }

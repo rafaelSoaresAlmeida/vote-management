@@ -11,7 +11,7 @@ group = 'com.vote'
 sourceCompatibility = '11'
 
 bootJar {
-	archiveFileName = 'vote-management'
+	archiveFileName = 'vote-management.jar'
 }
 
 

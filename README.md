@@ -16,11 +16,11 @@ This project I have developed using Intellij IDE and these technologies and fram
     -Lombok,
     -Actuator,
     -Docker,
-	-PMD plugin,
-	-Checkstyle plugin,
+	-PMD Gradle plugin,
+	-Checkstyle Gradle plugin,
     -Spring rest.
     -Spring Kafka
-    -Spring Mysql integration
+    -Mysql database
 
 ## About project	
 	This project is formed per one SpringBoot Application.
@@ -33,18 +33,18 @@ This project I have developed using Intellij IDE and these technologies and fram
             -In this Swagger url: http://localhost:8090/vote-management/swagger-ui.html you can check all documentation about rest endpoints using an internet browser;
 			-Basic the API has these endpoints:
 				
-				Post - http://localhost:8090/vote/v1/associate - Create associate on database;
-				Get - http://localhost:8090/vote/v1/associate - Retrieve all associetes registries on database;
+				Post - http://localhost:8090/vote-management/v1/associate - Create associate on database;
+				Get - http://localhost:8090/vote-management/v1/associate - Retrieve all associetes registries on database;
 				
-				Post - http://localhost:8090/vote/v1/assembly - Create new assembly on database;
-				Post - http://localhost:8090/vote/v1/assembly/openVotingSession - Open a voting session for an assembly;
-				Post - http://localhost:8090/vote/v1/assembly/vote - Vote in assembly voting session;
+				Post - http://localhost:8090/vote-management/v1/assembly - Create new assembly on database;
+				Post - http://localhost:8090/vote-management/v1/assembly/openVotingSession - Open a voting session for an assembly;
+				Post - http://localhost:8090/vote-management/v1/assembly/vote - Vote in assembly voting session;
 				
-				Get - http://localhost:8090/vote/v1/assembly - Retrieve all assemblies registries on database; (This endpoint is just to develping process, I mean it would be cutted in production environment)
-				Get - http://localhost:8090/vote/v1/assembly/{associateCpf}/{assemblyName} - Retrieve an specific assembly registry by name on database.
+				Get - http://localhost:8090/vote-management/v1/assembly - Retrieve all assemblies registries on database; (This endpoint is just to develping process, I mean it would be cutted in production environment)
+				Get - http://localhost:8090/vote-management/v1/assembly/{associateCpf}/{assemblyName} - Retrieve an specific assembly registry by name on database.
 				
             -You can check if the application is online using this actuator url in internet browser:
-                Get - http://localhost:8090/vote/health
+                Get - http://localhost:8090/vote-management/health
 			-There are unit tests for service layer;
 			-I have used the URI Versioning strategy to versioning the api endpoints;
 			-There are end to end tests for API that simulate the complete flows:
@@ -81,7 +81,7 @@ Inside Intellij IDE:
 Docker, you need follow these steps:
  ```bash
 	-Build the application,
-	-Build docker image with this command: docker build -t vote-management . or docker build -t assembly-management . (you need to run this command in root project that you want to *create the docker image);
+	-Build docker image with this command: docker build -t vote-management . or docker build -t vote-management . (you need to run this command in root project that you want to *create the docker image);
     -Execute the docker-compose file with this command: docker-compose up (you need to run this command in root project). You can -check if applications are running using the actuator feature, to do do that you need to access this url: http://localhost:8090/vote-management/health;
     -If you want to use H2 database instead of Mysql usind docker you need to remove SPRING_PROFILES_ACTIVE configuration in docker-compose file.
 ```

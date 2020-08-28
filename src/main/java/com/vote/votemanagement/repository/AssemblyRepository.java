@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AssemblyRepository extends CrudRepository<Assembly, Long> {
     Assembly findByName(final String name);
+    Assembly findByVotingSessionId(final Long id);
 }

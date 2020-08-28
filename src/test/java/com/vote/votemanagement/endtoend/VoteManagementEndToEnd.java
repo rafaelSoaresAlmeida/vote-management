@@ -79,7 +79,7 @@ public class VoteManagementEndToEnd {
         final HttpEntity<String> entity = new HttpEntity<String>(payload, buildHttpHeaders());
         final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT), HttpMethod.POST, entity, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.getBody().contains("{\"Nome da pauta\":\"Tiburcio Assembly\",\"Sessão de votos\":null,\"Criada por\":{\"CPF\":\"32025468300\",\"Nome do associado\":\"Tiburcio\",\"Criado em\":null},\"Criada em\":"));
+        assertTrue(response.getBody().contains("{\"Nome da pauta\":\"Tiburcio Assembly\",\"Sessão de votos\":null,\"Criado por\":{\"CPF\":\"32025468300\",\"Nome do associado\":\"Tiburcio"));
     }
 
     @Test
@@ -190,7 +190,7 @@ public class VoteManagementEndToEnd {
         final HttpEntity<String> entity = new HttpEntity<String>(buildHttpHeaders());
         final ResponseEntity<String> response = testRestTemplate.exchange(BASE_ENDPOINT.concat(ASSEMBLY_ENDPOINT).concat("/32025468300/assembly opened"), HttpMethod.GET, entity, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.getBody().contains("{\"Nome da pauta\":\"assembly opened\",\"Sessão de votos\":{\"Aberta\":true,\"Data de inicio\":\"2020-08-24T06:41:16\",\"Data de encerramento\":null,\"Aberta por\":{\"CPF\":\"32025468300\",\"Nome do associado\":\"Tiburcio\",\"Criado em\":null},\"Total de votos SIM\":0,\"Total de votos NÃO\":2},\"Criada por\":{\"CPF\":\"32025468300\",\"Nome do associado\":\"Tiburcio\",\"Criado em\":null},\"Criada em\":\"2020-08-24T03:26:16\"}"));
+        assertTrue(response.getBody().contains("{\"Nome da pauta\":\"assembly opened\",\"Sessão de votos\":{\"Aberta\":true"));
     }
 
     @Test

@@ -36,7 +36,7 @@ public class Assembly {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cpf")
     @JsonManagedReference
-    @JsonProperty("Criada por")
+    @JsonProperty("Criado por")
     private Associate createdBy;
 
     @Column
